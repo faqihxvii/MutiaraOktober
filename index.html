@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sebuah Kejutan Untukmu...</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-bg: #fdfaf4;
+            --tape-color: rgba(255, 224, 130, 0.6);
+            --text-dark: #4a4a4a;
+            --accent-color: #ff80ab;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --old-paper-bg: #f3e9d2;
+            --old-paper-border: #c8bda7;
+            --old-paper-text: #5a4b3a;
+        }
+
+        /* General Styling */
+        body {
+            margin: 0;
+            font-family: 'Patrick Hand', cursive;
+            background-color: var(--paper-bg);
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(255, 128, 171, 0.2) 1px, transparent 0),
+                radial-gradient(circle at 12px 12px, rgba(130, 212, 250, 0.2) 1px, transparent 0);
+            background-size: 24px 24px;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1, h2 {
+            font-family: 'Amatic SC', cursive;
+            font-weight: 700;
+            font-size: 3.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        #lock-screen {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+            background: var(--card-bg);
+            border: 1px dashed #ccc;
+            box-shadow: 5px 5px 15px var(--shadow-color);
+            transform: rotate(-1deg);
+        }
+
+        #countdown {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .time-box {
+            background: #fff0f5;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid #ffcce7;
+        }
+        .time-box span { display: block; font-size: 2rem; font-family: 'Patrick Hand', cursive; }
+        .time-box p { margin: 0; font-size: 0.8rem; }
+
+        #surprise-content {
+            display: none;
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+            box-sizing: border-box;
+            animation: fadeIn 1.5s ease-in-out;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        header h1 {
+            font-size: 5rem;
+            color: var(--accent-color);
+        }
+
+        .polaroid {
+            background: white;
+            padding: 1rem 1rem 3.5rem 1rem;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
+            transform: rotate(2deg);
+            margin: 0 auto 3rem auto;
+            max-width: 350px;
+            position: relative;
+            z-index: 4;
+            transition: transform 0.3s ease;
+        }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+        .polaroid img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .polaroid figcaption {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            text-align: center;
+            font-family: 'Amatic SC', cursive;
+            font-size: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 3px 3px 8px var(--shadow-color);
+            transition: transform 0.3s ease;
+            position: relative;
+            border: 1px solid #eee;
+            z-index: 2;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 30px;
+            background: var(--tape-color);
+            opacity: 0.8;
+            border-left: 2px dotted rgba(0,0,0,0.1);
+            border-right: 2px dotted rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+        
+        .card#surat-card { transform: rotate(-2deg); padding: 0; overflow: hidden; } 
+        .card#surat-card::before { top: -15px; right: 25%; transform: rotate(5deg); }
+        
+        .card#puisi-card { 
+            transform: rotate(1deg);
+            background-color: var(--old-paper-bg);
+            border: 1px solid var(--old-paper-border);
+            color: var(--old-paper-text);
+            background-image: linear-gradient(to right, rgba(0,0,0,0.02), rgba(0,0,0,0.05), rgba(0,0,0,0.02));
+        } 
+        .card#puisi-card::before { top: -15px; left: 50%; transform: rotate(3deg) translateX(-50%); }
+
+        .card#quiz-card { transform: rotate(-1.5deg); text-align: center;}
+        .card#quiz-card::before { top: -15px; right: 40%; transform: rotate(-5deg);}
+
+        .card:hover { transform: translateY(-5px) scale(1.02); z-index: 10; }
+
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-height: 300px;
+            transition: max-height 0.8s ease-in-out 0.3s;
+            overflow: hidden;
+        }
+        .envelope-wrapper.opened {
+            max-height: 1200px; 
+            cursor: default;
+        }
+        .envelope-cover {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #f7e8ee;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s 0.3s, z-index 0s 0.8s;
+            z-index: 7;
+            text-align: center;
+        }
+        .envelope-cover span { font-size: 3rem; margin-top: 1rem; }
+        .envelope-wrapper.opened .envelope-cover {
+            opacity: 0;
+            z-index: -1;
+        }
+        .letter-content {
+            padding: 1.5rem 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s 0.5s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .envelope-wrapper.opened .letter-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-color: #f2dbe5;
+            transform-origin: top;
+            transition: transform 0.5s ease-in-out;
+            z-index: 8;
+        }
+        .envelope-wrapper.opened .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .poem-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .control-btn {
+            background: #fff0f5;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .control-btn:hover { background: #ffe3f0; transform: scale(1.1); }
+        .control-btn:active { transform: scale(0.95); }
+        .control-btn svg { width: 28px; height: 28px; fill: var(--accent-color); }
+
+        #write-poem-btn {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+        #write-poem-btn[disabled] {
+            opacity: 0.5;
+            cursor: default;
+            transform: scale(1);
+        }
+        #poem-text.typing::after {
+            content: '|';
+            animation: blink 0.7s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { color: transparent; }
+            50% { color: var(--old-paper-text); }
+        }
+
+        #quiz-container { text-align: center; }
+        #question-text { font-size: 1.5rem; min-height: 50px; }
+        #options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            padding: 1rem;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        .option-btn.correct { background-color: #c8e6c9; border-color: #4caf50; }
+        .option-btn.wrong { background-color: #ffcdd2; border-color: #f44336; }
+        .option-btn:disabled { cursor: not-allowed; }
+        #feedback-text { min-height: 24px; font-weight: bold; }
+        #quiz-result { text-align: center; }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        #entry-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: none; align-items: center;
+            justify-content: center; z-index: 1000;
+        }
+        #entry-modal-content {
+            padding: 2rem 3rem; background: var(--paper-bg); border-radius: 5px; text-align: center;
+            border: 2px dashed var(--accent-color);
+        }
+        #enter-button {
+            background: var(--accent-color); color: white; border: none;
+            padding: 0.8rem 2rem; font-size: 1.5rem; font-family: 'Amatic SC', cursive;
+            border-radius: 5px; cursor: pointer; transition: transform 0.2s ease;
+        }
+        #enter-button:hover { transform: scale(1.05); }
+
+        .sprinkle {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.8;
+            pointer-events: none;
+            animation-name: floatAnimation;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+        
+        @keyframes floatAnimation {
+            from { transform: translateY(0px) translateX(0px) rotate(-5deg); }
+            to { transform: translateY(-25px) translateX(10px) rotate(5deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1, h2 { font-size: 2.5rem; }
+            header h1 { font-size: 3.5rem; }
+            #surprise-content { padding: 1rem; }
+            .card { padding: 1rem 1.5rem; }
+            .letter-content { padding: 1rem 1.5rem; }
+            .card#puisi-card { padding: 1rem 1.5rem; }
+            #options-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="lock-screen">
+        <h1>Sesuatu yang spesial sedang disiapkan...</h1>
+        <p>Kejutan akan terbuka dalam:</p>
+        <div id="countdown">
+            <div class="time-box"><span id="days">00</span><p>Hari</p></div>
+            <div class="time-box"><span id="hours">00</span><p>Jam</p></div>
+            <div class="time-box"><span id="minutes">00</span><p>Menit</p></div>
+            <div class="time-box"><span id="seconds">00</span><p>Detik</p></div>
+        </div>
+        <p>Khusus untuk orang paling spesial di tanggal 21 Oktober 2025.</p>
+    </div>
+
+    <div id="entry-modal">
+        <div id="entry-modal-content">
+            <h2>Pssst... ada kado buat kamu!</h2>
+            <button id="enter-button">Buka!</button>
+        </div>
+    </div>
+
+    <main id="surprise-content">
+        <header>
+            <h1>Happy Birthday, Cintaku!</h1>
+            <p style="font-size: 1.5rem;">Selamat ulang tahun yang ke-23, Tiara!</p>
+        </header>
+
+        <figure class="polaroid">
+            <img src="./assets/foto-tiara.jpg" alt="Foto spesial untukmu">
+            <figcaption>My favorite person ♡</figcaption>
+        </figure>
+
+        <section class="card" id="surat-card">
+            <div class="envelope-wrapper">
+                <div class="envelope-flap"></div>
+                <div class="envelope-cover">
+                    <h2>Sebuah Surat...</h2>
+                    <span>💌</span>
+                    <p style="margin-top: 1rem;">(Klik untuk buka)</p>
+                </div>
+                <div class="letter-content">
+                     <h2>Untuk: Tiara-ku,</h2>
+                     <p>
+                        Selamat ulang tahun yang ke-23, ya! Rasanya baru kemarin kita bersepeda dibawah sinar bulan dan sekarang kita sudah sampai di titik ini.<br><br>
+                        Kalau aku bisa mendeskripsikan setahun terakhir bersamamu, mungkin kata yang paling tepat adalah 'cahaya'. Kamu datang dan membuat segalanya jadi lebih terang, lebih hangat, dan lebih punya arti. Aku suka caramu tersenyum saat mendengar celotehanku, caramu yang super serius saat bercerita tentang mimpimu, dan bahkan caramu yang kadang-kadang ceroboh menumpahkan milkshake. Semua hal kecil itu yang membuatku jatuh cinta padamu, lagi dan lagi, setiap hari.<br><br>
+                        Di usiamu yang baru ini, aku nggak akan berjanji macam-macam, tapi aku mau kamu tahu, aku akan selalu berusaha jadi orang yang bisa kamu andalkan, tempatmu pulang, dan partner terbaikmu dalam segala hal. Semoga semua mimpi dan cita-citamu tercapai ya. Semoga kamu selalu dikelilingi kebahagiaan, kesehatan, dan cinta yang tulus, terutama dariku.<br><br>
+                        Terima kasih sudah menjadi Mutiara-ku.<br><br>
+                        Dengan segala cinta di dunia ini,<br>
+                        Faqih
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card" id="puisi-card">
+             <div class="poem-header">
+                <h2>Beberapa Bait Kata</h2>
+                <button id="write-poem-btn" class="control-btn" aria-label="Tulis Puisi">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path></svg>
+                </button>
+            </div>
+            <p id="poem-text" style="white-space: pre-wrap; text-align: center; line-height: 2; font-size: 1.2rem;"></p>
+        </section>
+
+        <section class="card" id="quiz-card">
+            <h2>Kuis Kecil Kita!</h2>
+            <div id="quiz-container">
+                <p id="question-text">Klik tombol "Mulai" untuk tes ingatanmu!</p>
+                <div id="options-container"></div>
+                <p id="feedback-text"></p>
+            </div>
+            <div id="quiz-result" style="display: none;">
+                <h3>Hasilnya...</h3>
+                <p id="result-text"></p>
+            </div>
+        </section>
+
+        <footer>
+            <p>Semoga kamu suka sama kado sederhana ini. I love you to the moon and back!</p>
+        </footer>
+
+    </main>
+    
+    <!-- Background Ambience (Autoplay) -->
+    <audio id="background-ambience" src="./assets/musik-latar.mp3" loop></audio>
+
+    <script>
+        // Set the target date: Year, Month (0-11), Day, Hour, Minute, Second
+        const targetDate = new Date(2024, 9, 21, 0, 0, 0).getTime();
+        
+        const lockScreen = document.getElementById('lock-screen');
+        const entryModal = document.getElementById('entry-modal');
+        const enterButton = document.getElementById('enter-button');
+        const surpriseContent = document.getElementById('surprise-content');
+        const backgroundAmbience = document.getElementById('background-ambience');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        
+        const envelopeWrapper = document.querySelector('.envelope-wrapper');
+        const writePoemBtn = document.getElementById('write-poem-btn');
+        const poemTextEl = document.getElementById('poem-text');
+
+        const quizContainer = document.getElementById('quiz-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackText = document.getElementById('feedback-text');
+        const quizResult = document.getElementById('quiz-result');
+        const resultText = document.getElementById('result-text');
+
+        const fullPoem = `Sang Mutiara di Cakrawala Oktober\n\nDi riak waktu, Oktober berlabuh,\nMembawa serta sebentuk anugerah.\nEngkau terlahir, wahai kekasihku,\nMutiara Zulema, pembawa cerah.\n\nDua puluh tiga purnama telah kausapa,\nTiap pendar sinarmu mengukir pesona.\nPada tatapmu, semesta terkesima,\nPada senyummu, luluh segala gulana.\n\nBukan sekadar rupa yang memikat raga,\nNamun nurani selembut sutera.\nLangkahmu adalah irama, tiap katamu adalah doa,\nEngkaulah sajak terindah yang pernah tercipta.\n\nMaka di hari bahagiamu ini, duhai Tiara,\nBiarlah semesta turut meraya.\nSebab hadirmu adalah anugerah tiada tara,\nDan cintaku untukmu, abadi selamanya.`;
+
+        const quizData = [
+            { question: "Kemana kita pertama kali hangout?", options: ["Museum Macan", "Kota Tua", "Taman Alfa", "PIM"], answer: 2 },
+            { question: "Apa series/film terakhir yang kita tonton?", options: ["Gadis Kretek", "Agak Laen", "Alice in Borderland", "Siksa Kubur"], answer: 2 },
+            { question: "Apa minuman favoritku di Haus!?", options: ["Choco Cheese Crunchy", "Bengbeng Caramel", "Taro", "Boba Brown Sugar"], answer: 1 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function createSprinkles() {
+            const sprinkleContainer = document.getElementById('surprise-content');
+            const emojis = ['💖', '✨', '🍭', '🍬', '🎂', '🐱', '🎀', '🎉', '🌟', '🌸', '🍰', '🎁'];
+            const sprinkleCount = 40;
+
+            for (let i = 0; i < sprinkleCount; i++) {
+                const sprinkle = document.createElement('span');
+                sprinkle.classList.add('sprinkle');
+                sprinkle.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+
+                let top, left;
+                const horizontalPadding = 25;
+                const topClearance = 20;
+                const bottomClearance = 15;
+
+                if (Math.random() > 0.5) {
+                    left = Math.random() * horizontalPadding;
+                } else {
+                    left = 100 - (Math.random() * horizontalPadding);
+                }
+                top = Math.random() * (100 - topClearance - bottomClearance) + topClearance;
+
+                const size = Math.random() * 2.5 + 1.5;
+                const rotation = Math.random() * 90 - 45;
+                
+                sprinkle.style.top = `${top}%`;
+                sprinkle.style.left = `${left}%`;
+                sprinkle.style.fontSize = `${size}rem`;
+                sprinkle.style.transform = `rotate(${rotation}deg)`;
+                
+                const duration = Math.random() * 4 + 5;
+                const delay = Math.random() * 4;
+                sprinkle.style.animationDuration = `${duration}s`;
+                sprinkle.style.animationDelay = `${delay}s`;
+                
+                sprinkleContainer.appendChild(sprinkle);
+            }
+        }
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            if (distance <= 0) {
+                clearInterval(countdownInterval);
+                lockScreen.style.display = 'none';
+                entryModal.style.display = 'flex';
+            } else {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                daysEl.innerText = String(days).padStart(2, '0');
+                hoursEl.innerText = String(hours).padStart(2, '0');
+                minutesEl.innerText = String(minutes).padStart(2, '0');
+                secondsEl.innerText = String(seconds).padStart(2, '0');
+            }
+        };
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizResult.style.display = 'none';
+            quizContainer.style.display = 'block';
+            optionsContainer.innerHTML = '<button class="option-btn" id="start-quiz-btn" style="grid-column: 1 / -1;">Mulai!</button>';
+            document.getElementById('start-quiz-btn').addEventListener('click', showQuestion);
+        }
+
+        function showQuestion() {
+            feedbackText.textContent = '';
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionText.textContent = currentQuestion.question;
+            optionsContainer.innerHTML = '';
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('option-btn');
+                button.addEventListener('click', () => selectAnswer(index));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const currentQuestion = quizData[currentQuestionIndex];
+            const correct = selectedIndex === currentQuestion.answer;
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+
+            if (correct) {
+                score++;
+                feedbackText.textContent = 'Benar! Ingatanmu kuat juga ya :)';
+                feedbackText.style.color = '#4caf50';
+            } else {
+                feedbackText.textContent = 'Salah! Tapi gapapa, aku tetep sayang.';
+                feedbackText.style.color = '#f44336';
+            }
+
+            buttons.forEach((button, index) => {
+                if(index === currentQuestion.answer) {
+                    button.classList.add('correct');
+                } else if (index === selectedIndex) {
+                    button.classList.add('wrong');
+                }
+                button.disabled = true;
+            });
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 2000);
+        }
+
+        function showResult() {
+            quizContainer.style.display = 'none';
+            quizResult.style.display = 'block';
+            resultText.textContent = `Kamu berhasil menjawab ${score} dari ${quizData.length} pertanyaan dengan benar! Terima kasih udah selalu inget detail kecil tentang kita.`;
+        }
+
+        enterButton.addEventListener('click', () => {
+            entryModal.style.display = 'none';
+            surpriseContent.style.display = 'block';
+            createSprinkles();
+            backgroundAmbience.play().catch(error => { console.log("Ambience autoplay was prevented.", error); });
+            startQuiz(); 
+        });
+        
+        envelopeWrapper.addEventListener('click', () => {
+            if (!envelopeWrapper.classList.contains('opened')) {
+                 envelopeWrapper.classList.add('opened');
+            }
+        });
+
+        writePoemBtn.addEventListener('click', () => {
+            writePoemBtn.disabled = true;
+            poemTextEl.innerHTML = ''; 
+            poemTextEl.classList.add('typing');
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < fullPoem.length) {
+                    poemTextEl.innerHTML += fullPoem.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    poemTextEl.classList.remove('typing');
+                }
+            }, 120); 
+        });
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
